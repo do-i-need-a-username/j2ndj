@@ -12,9 +12,21 @@ Converts a json file to [ndjson](https://ndjson.org/) file. (New Line Delimited 
 ```bash
 # Install go
 go install github.com/do-i-need-a-username/j2ndj@latest
-# fins install path
+```
+
+## Usage ##
+
+```bash
+# find install path
 which j2ndj
 /Users/myuser/go/bin/j2ndj
-# Run the command
-/Users/myuser/go/bin/j2ndj -input /tmp/logs.json -output /tmp/logs.ndjson
+# Run the command with output file
+/Users/myuser/go/bin/j2ndj -input /tmp/logs.json -output /tmp/nd_logs.ndjson
+# ls
+# logs.json   nd_logs.ndjson
+
+# Run the command with output file inferred from input file
+/Users/myuser/go/bin/j2ndj -input /tmp/logs.json
+# ls
+# logs.json   logs.ndjson
 ```

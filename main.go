@@ -15,10 +15,8 @@ var (
 	output = flag.String("output", "", "Output file. Uses input with extension .ndjson if not provided")
 )
 
+// Convert json to ndjson
 func run() error {
-	// input := flag.String("input", "", "Input JSON file")
-	// output := flag.String("output", "", "Output file. Uses input with extension .ndjson if not provided")
-
 	flag.Usage = func() {
 		fmt.Printf("Usage of %s:\n", os.Args[0])
 		fmt.Println("Converts a json file to a New Line Delimited JSON (ndjson) file.")
