@@ -12,11 +12,19 @@ import (
 
 func main() {
 	input := flag.String("input", "", "Input JSON file")
-	output := flag.String("output", "", "Output file")
+	output := flag.String("output", "", "Output file. Uses input with extention .ndjson if not provided")
+
+	flag.Usage = func() {
+		fmt.Printf("Usage of %s:\n", os.Args[0])
+		fmt.Println("Converts a json file to a New Line Delimited JSON (ndjson) file.")
+		fmt.Println("Flags:")
+		flag.PrintDefaults()
+	}
+
 	flag.Parse()
 
 	if *input == "" {
-		fmt.Println("Please provide an input json file using the -input flag.")
+		flag.Usage()
 		os.Exit(1)
 	}
 
