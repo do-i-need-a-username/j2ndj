@@ -10,9 +10,14 @@ import (
 	"strings"
 )
 
-func main() {
-	input := flag.String("input", "", "Input JSON file")
-	output := flag.String("output", "", "Output file. Uses input with extension .ndjson if not provided")
+var (
+	input  = flag.String("input", "", "Input JSON file")
+	output = flag.String("output", "", "Output file. Uses input with extension .ndjson if not provided")
+)
+
+func run() error {
+	// input := flag.String("input", "", "Input JSON file")
+	// output := flag.String("output", "", "Output file. Uses input with extension .ndjson if not provided")
 
 	flag.Usage = func() {
 		fmt.Printf("Usage of %s:\n", os.Args[0])
@@ -70,5 +75,15 @@ func main() {
 			fmt.Println("Error writing to output file:", err)
 			os.Exit(1)
 		}
+	}
+
+	return nil
+}
+
+func main() {
+	flag.Parse()
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 }
