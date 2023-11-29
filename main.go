@@ -12,7 +12,7 @@ import (
 
 func main() {
 	input := flag.String("input", "", "Input JSON file")
-	output := flag.String("output", "", "Output file. Uses input with extention .ndjson if not provided")
+	output := flag.String("output", "", "Output file. Uses input with extension .ndjson if not provided")
 
 	flag.Usage = func() {
 		fmt.Printf("Usage of %s:\n", os.Args[0])
