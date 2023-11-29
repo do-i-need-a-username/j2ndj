@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -10,12 +11,16 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Please provide a json file as a command line argument.")
+	input := flag.String("input", "", "Input JSON file")
+	output := flag.String("output", "", "Output file")
+	flag.Parse()
+
+	if *input == "" {
+		fmt.Println("Please provide an input json file using the -input flag.")
 		os.Exit(1)
 	}
 
-	jsonFile, err := os.Open(os.Args[1])
+	jsonFile, err := os.Open(*input)
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		os.Exit(1)
@@ -35,7 +40,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	outputFileName := strings.TrimSuffix(os.Args[1], filepath.Ext(os.Args[1])) + ".ndjson"
+	outputFileName := *output
+	if outputFileName == "" {
+		outputFileName = strings.TrimSuffix(*input, filepath.Ext(*input)) + ".ndjson"
+	}
 	outputFile, err := os.Create(outputFileName)
 	if err != nil {
 		fmt.Println("Error creating output file:", err)
