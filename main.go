@@ -1,3 +1,7 @@
+// run converts JSON to NDJSON format.
+// It reads the input JSON file or standard input if no input file is provided.
+// It writes the output to the specified file or standard output if no output file is provided.
+// The function returns an error if any error occurs during the conversion process.
 package main
 
 import (
@@ -6,8 +10,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path/filepath"
-	"strings"
 )
 
 var (
@@ -17,61 +19,50 @@ var (
 
 // Convert json to ndjson
 func run() error {
-	flag.Usage = func() {
-		fmt.Printf("Usage of %s:\n", os.Args[0])
-		fmt.Println("Converts a json file to a New Line Delimited JSON (ndjson) file.")
-		fmt.Println("Flags:")
-		flag.PrintDefaults()
-	}
-
-	flag.Parse()
+	var reader io.Reader
+	var writer io.Writer
 
 	if *input == "" {
-		flag.Usage()
-		os.Exit(1)
+		reader = os.Stdin
+	} else {
+		file, err := os.Open(*input)
+		if err != nil {
+			return fmt.Errorf("Error opening input file: %w", err)
+		}
+		defer file.Close()
+		reader = file
 	}
 
-	jsonFile, err := os.Open(*input)
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		os.Exit(1)
+	if *output == "" {
+		writer = os.Stdout
+	} else {
+		file, err := os.Create(*output)
+		if err != nil {
+			return fmt.Errorf("Error creating output file: %w", err)
+		}
+		defer file.Close()
+		writer = file
 	}
-	defer jsonFile.Close()
 
-	byteValue, err := io.ReadAll(jsonFile)
+	byteValue, err := io.ReadAll(reader)
 	if err != nil {
-		fmt.Println("Error reading file:", err)
-		os.Exit(1)
+		return fmt.Errorf("Error reading from input: %w", err)
 	}
 
 	var result []map[string]interface{}
 	err = json.Unmarshal(byteValue, &result)
 	if err != nil {
-		fmt.Println("Error parsing JSON:", err)
-		os.Exit(1)
+		return fmt.Errorf("Error decoding JSON from input: %w", err)
 	}
-
-	outputFileName := *output
-	if outputFileName == "" {
-		outputFileName = strings.TrimSuffix(*input, filepath.Ext(*input)) + ".ndjson"
-	}
-	outputFile, err := os.Create(outputFileName)
-	if err != nil {
-		fmt.Println("Error creating output file:", err)
-		os.Exit(1)
-	}
-	defer outputFile.Close()
 
 	for _, item := range result {
 		jsonStr, err := json.Marshal(item)
 		if err != nil {
-			fmt.Println("Error converting to JSON:", err)
-			os.Exit(1)
+			return fmt.Errorf("Error converting to JSON: %w", err)
 		}
-		_, err = outputFile.WriteString(string(jsonStr) + "\n")
+		_, err = writer.Write([]byte(string(jsonStr) + "\n"))
 		if err != nil {
-			fmt.Println("Error writing to output file:", err)
-			os.Exit(1)
+			return fmt.Errorf("Error writing to output: %w", err)
 		}
 	}
 

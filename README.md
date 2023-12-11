@@ -5,12 +5,12 @@
 [![codecov](https://codecov.io/gh/do-i-need-a-username/j2ndj/branch/main/graph/badge.svg?token=ZQZQZQZQZQ)](https://codecov.io/gh/do-i-need-a-username/j2ndj)
 [![Go Reference](https://pkg.go.dev/badge/github.com/do-i-need-a-username/j2ndj.svg)](https://pkg.go.dev/github.com/do-i-need-a-username/j2ndj)
 
-Converts a json file to [ndjson](https://ndjson.org/) file. (New Line Delimited JSON)
+Converts json to [ndjson](https://ndjson.org/), New Line Delimited JSON.
 
 ## Installation ##
 
 ```bash
-# Install go
+# Install with go
 go install github.com/do-i-need-a-username/j2ndj@latest
 ```
 
@@ -20,13 +20,30 @@ go install github.com/do-i-need-a-username/j2ndj@latest
 # find install path
 which j2ndj
 /Users/myuser/go/bin/j2ndj
-# Run the command with output file
-/Users/myuser/go/bin/j2ndj -input /tmp/logs.json -output /tmp/nd_logs.ndjson
-# ls
-# logs.json   nd_logs.ndjson
 
-# Run the command with output file inferred from input file
-/Users/myuser/go/bin/j2ndj -input /tmp/logs.json
-# ls
-# logs.json   logs.ndjson
+# stdin t ostdout
+cat input.json | ./bin/j2ndj
+{"age":30,"city":"New York","name":"John Doe"}
+{"age":28,"city":"Los Angeles","name":"Jane Doe"}
+{"age":35,"city":"Chicago","name":"Bob Smith"}
+
+# stdin to output file
+cat input.json | ./bin/j2ndj -output=./output.ndjson
+
+# input file to stdout
+./bin/j2ndj -input=./input.json
+{"age":30,"city":"New York","name":"John Doe"}
+{"age":28,"city":"Los Angeles","name":"Jane Doe"}
+{"age":35,"city":"Chicago","name":"Bob Smith"}
+
+# input file to output file
+./bin/j2ndj -input=./input.json -output=./output.ndjson
+```
+
+## Alternative ##
+
+Use jq to convert json to ndjson
+
+```bash
+jq -c '.[]' input.json > output.ndjson
 ```
